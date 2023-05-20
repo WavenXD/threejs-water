@@ -26,6 +26,8 @@ loadFile('shaders/utils.glsl').then((utils) => {
   camera.position.set(0.426, 0.677, -2.095);
   camera.rotation.set(2.828, 0.191, 3.108);
 
+  const scene = new THREE.Scene();
+
   const renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true, alpha: true});
   renderer.setSize(width, height);
   renderer.autoClear = false;
@@ -368,6 +370,20 @@ loadFile('shaders/utils.glsl').then((utils) => {
 
   const debug = new Debug();
 
+  const gltfLoader = new THREE.GLTFLoader();
+
+  gltfLoader.load('stingray_unity.gltf', (gltf) => {
+    // The model has finished loading
+    const object = gltf.scene;
+
+    // Manipulate the object if needed (e.g., position, rotation, scale)
+    object.position.set(0, 0, -5);
+    object.scale.set(200, 200, 200);
+
+    // Add the object to the scene
+    scene.add(object);
+  });
+
 
   // Main rendering loop
   function animate() {
@@ -385,6 +401,8 @@ loadFile('shaders/utils.glsl').then((utils) => {
     renderer.setRenderTarget(null);
     renderer.setClearColor(white, 1);
     renderer.clear();
+
+    renderer.render(scene, camera);
 
     water.draw(renderer, waterTexture, causticsTexture);
     pool.draw(renderer, waterTexture, causticsTexture);
